@@ -9,11 +9,12 @@
 <body>
     <h2>Add User</h2>
 
-<form id="userForm">
+<form id="userForm" enctype="multipart/form-data">
 
 <input type="text" id="name" placeholder="Name" required pattern="[A-Za-z]+"title="Only letters allowed">
 <input type="number" id="age" placeholder="Age"required min="16"max="50">
 <input type="text" id ="domain" placeholder="Domain" required pattern="[A-Za-z]+"title="Only letters allowed">
+<input type="file" name="image">
 
 <button type="submit">Submit</button>
 
@@ -23,7 +24,7 @@
 
 <button onclick="getUsers()">Get Users</button>
 
-<div class="usersdatabox"></div>
+<div id ="userdata"></div>
 
 <script src="script.js"></script>
 </body>

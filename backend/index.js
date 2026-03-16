@@ -2,10 +2,26 @@ const express = require("express");
 const app = express();
 const fs = require("fs");
 const cors = require("cors");
+const multer = require("multer");
 app.use(express.json());
 app.use(cors());
 app.use(express.static("frontend"));
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static("uploads"));
+
+
+
+const storage = multer.diskStorage({
+ destination:function(req,file,cb){
+  cb(null,"uploads");
+ },
+ filename:function(req,file,cb){
+  cb(null,Date.now()+"-"+file.originalname);
+ }
+});
+
+const upload = multer({storage:storage});
+
 
 
 app.get("/users", (req, res) => {
@@ -30,16 +46,17 @@ app.get("/users/:id",(req,res)=>{
 })
 
 
-app.post("/user",(req,res)=>{
+app.post("/user", upload.single("image"),(req,res)=>{
     const userdata = fs.readFileSync("data.json");
     const users = JSON.parse(userdata);
    const maxid = users.reduce((max,element)=>{
     return element.id > max?element.id:max;
    },0);
     const data = req.body;
+    const img = req.file ? req.file.filename : null;
     const freshuser = {
         "id":maxid+1,
-        ...data
+        ...data,img
     };
     users.push(freshuser);
     const newuser = JSON.stringify(users);
